@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Checklist do Peregrino</h2>
+
+<p class="intro">
+    Use esta lista para se organizar antes da peregrinação.
+    Marque os itens conforme for separando.
+</p>
+
+<div class="card">
+
+    <h3>👕 Vestuário</h3>
+
+    <label><input type="checkbox"> Camisetas confortáveis</label>
+    <label><input type="checkbox"> Calça ou bermuda adequada</label>
+    <label><input type="checkbox"> Meias extras</label>
+    <label><input type="checkbox"> Agasalho</label>
+    <label><input type="checkbox"> Boné ou chapéu</label>
+
+</div>
+
+<div class="card">
+
+    <h3>👟 Calçados</h3>
+
+    <label><input type="checkbox"> Tênis já usado (não novo)</label>
+    <label><input type="checkbox"> Chinelo ou sandália</label>
+
+</div>
+
+<div class="card">
+
+    <h3>🎒 Itens pessoais</h3>
+
+    <label><input type="checkbox"> Mochila confortável</label>
+    <label><input type="checkbox"> Garrafa de água</label>
+    <label><input type="checkbox"> Protetor solar</label>
+    <label><input type="checkbox"> Capa de chuva</label>
+    <label><input type="checkbox"> Documentos pessoais</label>
+    <label><input type="checkbox"> Repelente</label>
+
+</div>
+
+<div class="card">
+
+    <h3>🙏 Espiritual</h3>
+
+    <label><input type="checkbox"> Terço</label>
+    <label><input type="checkbox"> Bíblia ou livro de oração</label>
+    <label><input type="checkbox"> Intenções pessoais</label>
+
+</div>
+
+<p class="aviso">
+    Cada peregrino é responsável por seus pertences e por sua preparação pessoal.
+</p>
+
+{% endblock %}

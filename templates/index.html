@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="banner" style="background-image: url('{{ url_for('static', filename='images/banner.jpg') }}');">
+    <div class="banner-overlay">
+
+        <p class="banner-datas">
+            25 e 26 de setembro de 2026
+        </p>
+
+        <p class="banner-local">
+            De Blumenau para Nova Trento
+        </p>
+
+        <a 
+          href="https://docs.google.com/forms/d/e/1FAIpQLSemGN4xoAQq3Kl9sfy7fVZcI-oMeqnGsM_MYn3oBwxZgRQ_yg/viewform"
+          class="botao-principal"
+          target="_blank"
+        >
+            👉 Fazer inscrição
+        </a>
+
+    </div>
+</div>
+
+<div class="home-card">
+    <p>
+        A peregrinação é uma caminhada de fé, gratidão e superação,
+        realizada anualmente rumo ao Santuário de Santa Paulina.
+    </p>
+
+    <p class="ajuda">
+        Em caso de dúvidas, envie sua pergunta no grupo de WhatsApp da peregrinação.
+        Um membro da organização irá responder.
+    </p>
+</div>
+
+{% endblock %}
