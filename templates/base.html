@@ -5,6 +5,13 @@
     <title>Peregrinação Santa Paulina</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Suporte PWA para iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Peregrinação">
+
+    <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+
 </head>
 <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
 <meta name="theme-color" content="#0b4f6c">
@@ -19,6 +26,8 @@
      <a href="/orientacoes">Orientações</a>
     <a href="/checklist">Checklist</a>
     <a href="/oracao">Oração</a>
+    <a href="{{ url_for('mapa') }}">Mapa</a>
+
 </nav>
 
 </header>
