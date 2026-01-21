@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Checklist do Peregrino</h2>
+
+<div class="card">
+    {% for item in itens %}
+        <label class="check-item">
+            <input 
+                type="checkbox"
+                class="check"
+                data-id="item-{{ loop.index }}"
+            >
+            {{ item }}
+        </label>
+    {% endfor %}
+</div>
+
+<p class="hint">Os itens marcados ficam salvos no seu celular.</p>
+
+<script src="{{ url_for('static', filename='checklist.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Peregrinação Santa Paulina</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Suporte PWA para iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Peregrinação">
+
+    <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+
+</head>
+<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+<meta name="theme-color" content="#0b4f6c">
+
+<body>
+
+<header>
+    <h1>11ª Peregrinação</h1>
+<nav>
+    <a href="/">Início</a>
+    <a href="/programacao">Programação</a>
+     <a href="/orientacoes">Orientações</a>
+    <a href="/checklist">Checklist</a>
+    <a href="/oracao">Oração</a>
+    <a href="{{ url_for('mapa') }}">Mapa</a>
+
+</nav>
+
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/static/service-worker.js");
+}
+</script>
+<footer class="app-footer">
+  <small>Versão 1.0.0</small>
+</footer>
+
+</body>
+</html>

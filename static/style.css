@@ -1,0 +1,197 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f4f4;
+}
+
+header {
+    background: #0b4f6c;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    margin: 0 0.5rem;
+    text-decoration: none;
+}
+
+main {
+    padding: 1rem;
+}
+.botao-inscricao {
+    display: block;
+    text-align: center;
+    background: #2c6e49;
+    color: white;
+    padding: 20px;
+    font-size: 22px;
+    border-radius: 10px;
+    text-decoration: none;
+    margin-top: 1.5rem;
+}
+.botao-inscricao:active {
+    background: #245a3c;
+}
+.aviso {
+    border-left: 6px solid #d9534f;
+    background: #fff5f5;
+}
+.banner {
+    background-size: cover;
+    background-position: top center; /* mostra a parte de cima da imagem */
+    min-height: 50vh;                /* aumenta a altura do banner */
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    color: white;
+    text-align: center;
+}
+
+
+.banner-overlay {
+    background: rgba(11, 79, 108, 0.75);
+    padding: 2rem 1rem;
+    border-radius: 12px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.banner h1 {
+    font-size: 28px;
+    margin-bottom: 0.5rem;
+}
+
+.banner p {
+    font-size: 18px;
+}
+
+.home-card {
+    background: white;
+    padding: 1.2rem;
+    margin: 1rem auto;
+    border-radius: 10px;
+    max-width: 420px;
+}
+
+.botao-principal {
+    display: block;
+    background: #0b4f6c;
+    color: white;
+    text-align: center;
+    padding: 18px;
+    font-size: 22px;
+    border-radius: 10px;
+    text-decoration: none;
+    margin-top: 1.2rem;
+}
+.banner-datas {
+    font-size: 20px;
+    margin-bottom: 0.5rem;
+}
+
+.banner-local {
+    font-size: 18px;
+    margin-bottom: 1.5rem;
+}
+
+.botao-principal {
+    background: #ffffff;
+    color: #0b4f6c;
+    font-weight: bold;
+}
+/* Efeito visual ao tocar no botão (celular) */
+.botao-principal:active {
+    background: #e6e6e6;
+}
+/* Efeito ao passar o mouse (desktop) */
+.botao-principal:hover {
+    background: #f2f2f2;
+}
+.home-card p {
+    font-size: 17px;
+    line-height: 1.5;
+}
+h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.card h3 {
+    color: #0b4f6c;
+    margin-bottom: 0.8rem;
+}
+
+.card p {
+    font-size: 17px;
+    line-height: 1.4;
+    margin-bottom: 0.8rem;
+}
+
+.aviso {
+    margin: 1.5rem auto;
+    padding: 1rem;
+    max-width: 420px;
+    background: #f9f9f9;
+    border-left: 5px solid #0b4f6c;
+    font-size: 16px;
+}
+.botao-secundario {
+    display: block;
+    margin-top: 1rem;
+    padding: 14px;
+    background: #f2f2f2;
+    color: #0b4f6c;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 8px;
+}
+
+.botao-secundario:active {
+    background: #e0e0e0;
+}
+ul {
+    padding-left: 1.2rem;
+    font-size: 17px;
+}
+
+li {
+    margin-bottom: 0.6rem;
+}
+.check-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    /* 👇 ISSO GARANTE COLUNA */
+    width: 100%;
+}
+.card label {
+    display: block;
+}
+.map-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 75%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.map-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+.app-footer {
+    text-align: center;
+    padding: 1rem 0;
+    color: #777;
+    font-size: 13px;
+}
+
