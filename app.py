@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 
 app = Flask(__name__)
-
+APP_VERSION = "1.1.1"
 CHECKLIST_ITENS = [
     "Documento pessoal",
     "Cartão SUS / Plano de saúde",
@@ -50,6 +50,10 @@ def santa_paulina():
 @app.route("/oracoes/rosario")
 def rosario():
     return render_template("rosario/rosario.html")
+
+@app.context_processor
+def inject_version():
+    return dict(app_version=APP_VERSION)
 
 if __name__ == "__main__":
     app.run(debug=True)

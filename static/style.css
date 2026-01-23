@@ -225,4 +225,10 @@ li {
   font-size: 22px;
   margin-right: 10px;
 }
+.footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #888;
+}
 
