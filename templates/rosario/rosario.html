@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>🙏 Santo Rosário</h2>
+<h3 id="titulo-misterio"></h3>
+
+<div id="contas" class="rosario"></div>
+
+<div id="oracao">
+  <h3 id="titulo-oracao"></h3>
+  <p id="texto-oracao"></p>
+</div>
+
+<div style="margin-top:20px">
+  <button onclick="voltar()">Voltar</button>
+  <button onclick="avancar()">Avançar</button>
+</div>
+
+<script>
+/* ======================================================
+   ORAÇÕES FIXAS
+====================================================== */
+const oracoes = {
+  sinalCruz: "✝️ Em nome do Pai, do Filho e do Espírito Santo. Amém.",
+  oferecimento: "Divino Jesus, eu vos ofereço este Terço, que vou rezar, contemplando os mistérios de nossa Redenção. Concedei-me, pela intercessão de Maria, vossa Mãe Santíssima, a quem me dirijo, as virtudes que me são necessárias para bem rezá-lo e a graça de ganhar as indulgências anexas a esta santa devoção.",
+  credo: "Creio em Deus Pai todo-poderoso, Criador do céu e da terra...",
+  paiNosso: "Pai Nosso que estais no céu...",
+  aveMaria: "Ave Maria, cheia de graça...",
+  gloria: "Glória ao Pai, ao Filho e ao Espírito Santo...",
+  agradecimento: "Infinitas Graças vos damos, soberana Rainha, pelos benefícios que todos os dias recebemos de vossas mãos liberais. Dignai-vos, agora e para sempre, tomarmos debaixo do vosso poderoso amparo. E para mais vos obrigar, vos saudamos com uma Salve Rainha.",
+  salveRainha: "Salve Rainha, Mãe de misericórdia..."
+};
+
+/* ======================================================
+   MISTÉRIOS (TODOS)
+====================================================== */
+const misterios = {
+  gozosos: [
+    { titulo: "A Anunciação", meditacao: "O anjo anuncia a Maria o plano de Deus, e ela responde com fé." },
+    { titulo: "A Visitação", meditacao: "Maria visita Isabel, levando Jesus e espalhando alegria." },
+    { titulo: "O Nascimento de Jesus", meditacao: "Jesus nasce em Belém, trazendo luz ao mundo." },
+    { titulo: "A Apresentação no Templo", meditacao: "Jesus é apresentado ao Pai no Templo." },
+    { titulo: "A Perda e Encontro de Jesus", meditacao: "Jesus é encontrado no Templo, cuidando das coisas do Pai." }
+  ],
+  dolorosos: [
+    { titulo: "A Agonia no Horto", meditacao: "Jesus aceita a vontade do Pai em meio à dor." },
+    { titulo: "A Flagelação", meditacao: "Jesus sofre por nossos pecados." },
+    { titulo: "A Coroação de Espinhos", meditacao: "Jesus é humilhado como Rei." },
+    { titulo: "Jesus Carregando a Cruz", meditacao: "Jesus carrega o peso da cruz por amor a nós." },
+    { titulo: "A Crucificação", meditacao: "Jesus entrega sua vida para nossa salvação." }
+  ],
+  gloriosos: [
+    { titulo: "A Ressurreição", meditacao: "Jesus vence a morte e nos dá vida nova." },
+    { titulo: "A Ascensão", meditacao: "Jesus sobe aos céus e prepara-nos um lugar." },
+    { titulo: "Pentecostes", meditacao: "O Espírito Santo fortalece a Igreja." },
+    { titulo: "A Assunção de Maria", meditacao: "Maria é elevada ao céu em corpo e alma." },
+    { titulo: "A Coroação de Maria", meditacao: "Maria é coroada Rainha do Céu e da Terra." }
+  ],
+  luminosos: [
+    { titulo: "O Batismo de Jesus", meditacao: "Jesus é revelado como Filho amado do Pai." },
+    { titulo: "As Bodas de Caná", meditacao: "Jesus realiza o primeiro milagre por intercessão de Maria." },
+    { titulo: "O Anúncio do Reino", meditacao: "Jesus chama à conversão." },
+    { titulo: "A Transfiguração", meditacao: "Jesus revela sua glória no Monte Tabor." },
+    { titulo: "A Eucaristia", meditacao: "Jesus se entrega como alimento de vida eterna." }
+  ]
+};
+
+/* ======================================================
+   ESCOLHA AUTOMÁTICA DO DIA
+====================================================== */
+const dia = new Date().getDay();
+const mapaDia = {
+  0: "gloriosos",
+  1: "gozosos",
+  2: "dolorosos",
+  3: "gloriosos",
+  4: "luminosos",
+  5: "dolorosos",
+  6: "gozosos"
+};
+
+const tipoMist = mapaDia[dia];
+const listaMist = misterios[tipoMist];
+
+/* ======================================================
+   ESTADO
+====================================================== */
+let fase = "inicio"; // inicio | misterios | final
+let etapaInicio = 0; // 0 a 7
+let etapaFinal = 0;  // 0 a 1
+let dezena = 0;
+let conta = 0;
+let etapa = "meditacao";
+let finalizado = false;
+
+/* ======================================================
+   RENDER
+====================================================== */
+function render() {
+  const contasDiv = document.getElementById("contas");
+  contasDiv.innerHTML = "";
+
+  /* ===== INÍCIO ===== */
+  if (fase === "inicio") {
+    document.getElementById("titulo-misterio").innerText = "Preparação do Rosário";
+
+    const etapasInicio = [
+      { tipo: "cruz", titulo: "Sinal da Cruz", texto: oracoes.sinalCruz },
+      { tipo: "texto", titulo: "Oferecimento do Rosário", texto: oracoes.oferecimento },
+      { tipo: "texto", titulo: "Credo", texto: oracoes.credo },
+      { tipo: "grande", titulo: "Pai Nosso", texto: oracoes.paiNosso },
+      { tipo: "pequena", titulo: "Ave Maria", texto: oracoes.aveMaria },
+      { tipo: "pequena", titulo: "Ave Maria", texto: oracoes.aveMaria },
+      { tipo: "pequena", titulo: "Ave Maria", texto: oracoes.aveMaria },
+      { tipo: "grande", titulo: "Glória", texto: oracoes.gloria }
+    ];
+
+    etapasInicio.forEach((e, i) => {
+      if (e.tipo === "cruz") {
+        contasDiv.innerHTML += `<span class="cruz">✝️</span>`;
+      } else if (e.tipo !== "texto") {
+        contasDiv.innerHTML += `<span class="conta ${e.tipo} ${i === etapaInicio ? 'ativa' : ''}"></span>`;
+      }
+    });
+
+    document.getElementById("titulo-oracao").innerText = etapasInicio[etapaInicio].titulo;
+    document.getElementById("texto-oracao").innerText = etapasInicio[etapaInicio].texto;
+    return;
+  }
+
+  /* ===== FINAL ===== */
+  if (fase === "final") {
+    const finais = [
+      { titulo: "Oração de Agradecimento", texto: oracoes.agradecimento },
+      { titulo: "Salve Rainha", texto: oracoes.salveRainha }
+    ];
+    document.getElementById("titulo-misterio").innerText = "Encerramento";
+    document.getElementById("titulo-oracao").innerText = finais[etapaFinal].titulo;
+    document.getElementById("texto-oracao").innerText = finais[etapaFinal].texto;
+    return;
+  }
+
+  /* ===== MISTÉRIOS ===== */
+  const mist = listaMist[dezena];
+  document.getElementById("titulo-misterio").innerText =
+    `${dezena + 1}º Mistério (${tipoMist.charAt(0).toUpperCase() + tipoMist.slice(1)})`;
+
+  if (etapa === "meditacao") {
+    document.getElementById("titulo-oracao").innerText = mist.titulo;
+    document.getElementById("texto-oracao").innerText = mist.meditacao;
+    return;
+  }
+
+  contasDiv.innerHTML += `<span class="conta grande ${conta === 0 ? 'ativa' : ''}"></span>`;
+  for (let i = 1; i <= 10; i++) {
+    contasDiv.innerHTML += `<span class="conta pequena ${conta === i ? 'ativa' : ''}"></span>`;
+  }
+
+  if (etapa === "gloria") {
+    document.getElementById("titulo-oracao").innerText = "Glória";
+    document.getElementById("texto-oracao").innerText = oracoes.gloria;
+  } else {
+    document.getElementById("titulo-oracao").innerText = conta === 0 ? "Pai Nosso" : "Ave Maria";
+    document.getElementById("texto-oracao").innerText = conta === 0 ? oracoes.paiNosso : oracoes.aveMaria;
+  }
+}
+
+/* ======================================================
+   AVANÇAR
+====================================================== */
+function avancar() {
+  if (finalizado) return;
+
+  if (fase === "inicio") {
+    etapaInicio++;
+    if (etapaInicio > 7) {
+      fase = "misterios";
+      etapa = "meditacao";
+    }
+    render();
+    return;
+  }
+
+  if (fase === "final") {
+    etapaFinal++;
+    if (etapaFinal > 1) finalizado = true;
+    render();
+    return;
+  }
+
+  if (etapa === "meditacao") {
+    etapa = "paiNosso";
+    conta = 0;
+    render();
+    return;
+  }
+
+  if (etapa === "gloria") {
+    dezena++;
+    if (dezena === 5) {
+      fase = "final";
+      etapaFinal = 0;
+    } else {
+      etapa = "meditacao";
+      conta = 0;
+    }
+    render();
+    return;
+  }
+
+  if (conta < 10) conta++;
+  else etapa = "gloria";
+
+  render();
+}
+
+/* ======================================================
+   VOLTAR
+====================================================== */
+function voltar() {
+  if (fase === "inicio") {
+    if (etapaInicio > 0) etapaInicio--;
+    render();
+    return;
+  }
+
+  if (fase === "final") {
+    if (etapaFinal > 0) etapaFinal--;
+    else {
+      fase = "misterios";
+      dezena = 4;
+      etapa = "gloria";
+    }
+    render();
+    return;
+  }
+
+  if (etapa === "meditacao" && dezena > 0) {
+    dezena--;
+    etapa = "gloria";
+    conta = 10;
+    render();
+    return;
+  }
+
+  if (etapa === "gloria") {
+    etapa = "aveMaria";
+    conta = 10;
+  } else if (conta > 0) {
+    conta--;
+  }
+
+  render();
+}
+
+render();
+</script>
+
+{% endblock %}
