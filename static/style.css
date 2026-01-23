@@ -188,4 +188,41 @@ li {
     height: 100%;
     border: 0;
 }
+/* ===============================
+   ROSÁRIO – CONTAS
+=============================== */
+
+.rosario {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+  align-items: center;
+}
+
+.conta {
+  border-radius: 50%;
+  background-color: #bdbdbd;
+  display: inline-block;
+}
+
+.conta.grande {
+  width: 22px;
+  height: 22px;
+}
+
+.conta.pequena {
+  width: 14px;
+  height: 14px;
+}
+
+.conta.ativa {
+  background-color: #0b4f6c;
+  box-shadow: 0 0 0 3px rgba(11, 79, 108, 0.2);
+}
+
+.cruz {
+  font-size: 22px;
+  margin-right: 10px;
+}
 
