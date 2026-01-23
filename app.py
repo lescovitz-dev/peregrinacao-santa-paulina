@@ -2,7 +2,7 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
-# ✅ ITENS DO CHECKLIST (CADASTRADOS AQUI)
+# 🔹 ITENS DO CHECKLIST
 CHECKLIST_ITENS = [
     "Documento pessoal",
     "Cartão SUS / Plano de saúde",
@@ -16,34 +16,51 @@ CHECKLIST_ITENS = [
     "Mochila leve"
 ]
 
+# 🔹 PÁGINA INICIAL
 @app.route("/")
 def home():
     return render_template("index.html")
 
+# 🔹 PÁGINAS PRINCIPAIS
 @app.route("/logistica")
 def logistica():
     return render_template("logistica.html")
-    
+
 @app.route("/programacao")
 def programacao():
     return render_template("programacao.html")
 
 @app.route("/checklist")
 def checklist():
-    # ✅ ENVIA A LISTA PARA O TEMPLATE
     return render_template("checklist.html", itens=CHECKLIST_ITENS)
-
-@app.route("/oracao")
-def oracao():
-    return render_template("oracao.html")
 
 @app.route("/orientacoes")
 def orientacoes():
     return render_template("orientacoes.html")
-    
+
 @app.route("/mapa")
 def mapa():
     return render_template("mapa.html")
 
+@app.route("/extras")
+def extras():
+    return render_template("extras.html")
+
+# 🔹 ORAÇÕES (MENU)
+@app.route("/oracoes")
+def oracoes():
+    return render_template("oracoes.html")
+
+# 🔹 ORAÇÃO A SANTA PAULINA
+@app.route("/oracoes/santa-paulina")
+def santa_paulina():
+    return render_template("oracoes/santa_paulina.html")
+
+# 🔹 ROSÁRIO (INTERATIVO)
+@app.route("/oracoes/rosario")
+def rosario():
+    return render_template("rosario/rosario.html")
+
+# 🔹 START
 if __name__ == "__main__":
     app.run(debug=True)
