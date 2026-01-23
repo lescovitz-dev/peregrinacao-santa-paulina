@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Orações</h2>
+
+<div class="card">
+    <p>
+        🙏 Durante a peregrinação, reserve momentos para a oração pessoal
+        e comunitária. Aqui você encontra orações para acompanhar o caminho
+        e fortalecer a fé.
+    </p>
+</div>
+
+<!-- 🔹 ORAÇÕES EM TEXTO -->
+<div class="card">
+    <h3>📖 Orações</h3>
+
+    <a href="{{ url_for('oracao_santa_paulina') }}" class="botao-principal">
+        🕊️ Oração a Santa Paulina
+    </a>
+</div>
+
+<!-- 🔹 ORAÇÕES GUIADAS -->
+<div class="card">
+    <h3>📿 Orações Guiadas</h3>
+
+    <a href="{{ url_for('rosario_menu') }}" class="botao-principal">
+        📿 Santo Rosário (interativo)
+    </a>
+
+    <p class="hint" style="margin-top: 0.8rem;">
+        Reze o Rosário passo a passo, acompanhando as contas,
+        os mistérios do dia e as orações.
+    </p>
+</div>
+
+{% endblock %}

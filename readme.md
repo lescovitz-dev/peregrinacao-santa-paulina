@@ -22,4 +22,4 @@ Aplicação web em formato PWA para apoiar os peregrinos durante a 11ª Peregrin
 pip install flask
 python app.py
 
-Versão atual: v1.0.0
+Versão atual: v1.1.0
