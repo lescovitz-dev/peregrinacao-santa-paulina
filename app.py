@@ -51,6 +51,10 @@ def santa_paulina():
 def rosario():
     return render_template("rosario/rosario.html")
 
+@app.route("/mapa/apoios")
+def mapa_apoios():
+    return render_template("mapa_apoios.html")
+
 @app.context_processor
 def inject_version():
     return dict(app_version=APP_VERSION)

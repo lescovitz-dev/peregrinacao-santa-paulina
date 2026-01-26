@@ -1,37 +1,278 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Trajeto da Peregrinação</h2>
+<h2>🗺️ Mapa da Peregrinação</h2>
 
-<div class="card">
-    <h3>📍 Dia 1 – 25/09</h3>
-
-    <div class="map-container">
-    <iframe
-        src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d113741.03690366872!2d-49.05232944975087!3d-27.01728953723495!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m5!1s0x94df18163fffffff%3A0xe6d4fe16b9e67f55!2sPar%C3%B3quia%20Nossa%20Senhora%20da%20Gl%C3%B3ria%20-%20Rua%20da%20Gl%C3%B3ria%20-%20Gl%C3%B3ria%2C%20Blumenau%20-%20SC!3m2!1d-26.963990799999998!2d-49.059748!4m5!1s0x94df479be0980bb7%3A0x4af1854d5a49d200!2sTri%20Hotel%20Executive%20Brusque%20-%20R.%20Alexandre%20Athanasio%20Gevaerd%2C%2045%20-%20sala%20205%20-%20Centro%201%2C%20Brusque%20-%20SC%2C%2088350-070!3m2!1d-27.0962861!2d-48.914017799999996!5e0!3m2!1spt-BR!2sbr!4v1769016779824!5m2!1spt-BR!2sbr"
-        allowfullscreen
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
+<div style="margin-bottom: 1rem;">
+<button id="btn-dia1" onclick="mostrarDia(1)" class="botao-dia ativo">
+    📍 Dia 1
+  </button>
+  <button id="btn-dia2" onclick="mostrarDia(2)" class="botao-dia">
+    📍 Dia 2
+  </button>
+  <p style="margin-top: 0.8rem;">
+  <a href="/mapa/apoios" class="botao-secundario">
+    📋 Ver lista detalhada dos pontos de apoio
+  </a>
+  </p>
 </div>
 
-</div>
+<div id="map" style="height: 65vh; width: 100%; border-radius: 12px;"></div>
 
-<div class="card">
-    <h3>📍 Dia 2 – 26/09</h3>
+<!-- Leaflet CSS -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<script src="{{ url_for('static', filename='mapa-dados.js') }}"></script>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-     <div class="map-container">
-    <iframe
-        src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d47766.589702075195!2d-48.97410380524628!3d-27.147698804822234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e2!4m5!1s0x94df479be0980bb7%3A0x4af1854d5a49d200!2sTri%20Hotel%20Executive%20Brusque%20-%20R.%20Alexandre%20Athanasio%20Gevaerd%2C%2045%20-%20sala%20205%20-%20Centro%201%2C%20Brusque%20-%20SC%2C%2088350-070!3m2!1d-27.0962861!2d-48.914017799999996!4m5!1s0x94df5b4bd150b831%3A0x12818e7ccb84cadb!2sSantu%C3%A1rio%20Santa%20Paulina%20-%20Rua%20Madre%20Paulina%20-%20V%C3%ADgolo%2C%20Nova%20Trento%20-%20SC!3m2!1d-27.2522496!2d-48.9431994!5e0!3m2!1spt-BR!2sbr!4v1769015734885!5m2!1spt-BR!2sbr"
-        allowfullscreen
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
-    </div>
-</div>
+<script>
+/* ======================================================
+   MAPA BASE
+====================================================== */
+const map = L.map("map").setView([-27.100, -48.600], 10);
 
-<p class="hint">
-    💡 Dica: toque no mapa para abrir no Google Maps e navegar a pé.
-</p>
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution: "© OpenStreetMap"
+}).addTo(map);
 
+let markersLayer = L.layerGroup().addTo(map);
+
+/* ======================================================
+   ÍCONES POR CARRO DE APOIO
+====================================================== */
+function iconeCarro(carro) {
+  const cores = {
+    1: "red",
+    2: "blue",
+    3: "green",
+    4: "purple"
+  };
+
+  return L.divIcon({
+    html: `<div style="
+      background:${cores[carro]};
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      border:2px solid white;"></div>`,
+    className: "",
+    iconSize: [16, 16]
+  });
+}
+function iconeInicio() {
+  return L.divIcon({
+    html: `<div style="
+      background:#007bff;
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      border:3px solid white;
+      box-shadow:0 0 4px rgba(0,0,0,0.4);
+    "></div>`,
+    className: "",
+    iconSize: [18, 18]
+  });
+}
+
+function iconeFim() {
+  return L.divIcon({
+    html: `<div style="
+      background:#28a745;
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      border:3px solid white;
+      box-shadow:0 0 4px rgba(0,0,0,0.4);
+    "></div>`,
+    className: "",
+    iconSize: [18, 18]
+  });
+}
+
+/* ======================================================
+   DADOS EDITÁVEIS – PONTOS DE APOIO
+====================================================== */
+
+/* 🔹 DIA 1 */
+const apoiosDia1 = [
+  { km: 6,  lat: -27.000923, lng: -49.038497, carro: 1, nome: "Apoio 1 – Van Maria" },
+  { km: 9, lat: -27.019043, lng: -49.023349, carro: 2, nome: "Apoio 2 – Kombi José" },
+  { km: 12.3, lat: -27.036939, lng: -49.020904, carro: 3, nome: "Apoio 3 – Caminhonete Paulo" },
+  { km: 14.6, lat: -27.045777, lng: -49.013245, carro: 4, nome: "Apoio 4 – Van Ana" },
+  { km: 18.4, lat: -27.069221, lng: -48.998240, carro: 1, nome: "Apoio 5 – Van Maria" },
+  { km: 21.7, lat: -27.094183, lng: -48.985138, carro: 1, nome: "Apoio 6 – Van Maria" },
+  { km: 24.3, lat: -27.095984, lng: -48.961751, carro: 1, nome: "Apoio 7 – Van Maria" }
+];
+
+/* 🔹 DIA 2 */
+const apoiosDia2 = [
+  { km: 4.2,  lat: -27.124129, lng: -48.936247, carro: 2, nome: "Apoio 1 – Kombi José" },
+  { km: 9.7, lat: -27.159833, lng: -48.955933, carro: 3, nome: "Apoio 2 – Caminhonete Paulo" }, 
+  { km: 12.4, lat: -27.180118, lng: -48.967557, carro: 4, nome: "Apoio 3 – Van Ana" }, 
+  { km: 15.4, lat: -27.194496, lng: -48.951509, carro: 1, nome: "Apoio 4 – Van Maria" }, 
+  { km: 16, lat: -27.195427, lng: -48.946533, carro: 1, nome: "Apoio 5 – Van Maria" },
+  { km: 17.2, lat: -27.204119, lng: -48.942808, carro: 1, nome: "Apoio 6 – Van Maria" }, 
+  { km: 18.8, lat: -27.214468, lng: -48.934438, carro: 1, nome: "Apoio 7 – Van Maria" }, 
+  { km: 21.2, lat: -27.232121, lng: -48.939720, carro: 1, nome: "Apoio 8 – Van Maria" }
+];
+
+/* ======================================================
+   TRAJETO DO PERCURSO (EDITÁVEL)
+====================================================== */
+
+/* 🔹 DIA 1 – percurso aproximado */
+const trajetoDia1 = [
+  [-26.964034, -49.058889],
+  [-27.000923, -49.038497],
+  [-27.019043, -49.023349],
+  [-27.036939, -49.020904],
+  [-27.045777, -49.013245],
+  [-27.069221, -48.998240],
+  [-27.094183, -48.985138],
+  [-27.095984, -48.961751],
+  [-27.096353, -48.914205]
+];
+
+/* 🔹 DIA 2 */
+const trajetoDia2 = [
+  [-27.096287, -48.914279], 
+  [-27.124129, -48.936247],
+  [-27.159833, -48.955933],
+  [-27.180118, -48.967557],
+  [-27.194496, -48.951509],
+  [-27.195427, -48.946533],
+  [-27.204119, -48.942808],
+  [-27.214468, -48.934438],
+  [-27.232121, -48.939720],
+  [-27.252097, -48.942098]
+];
+
+let linhaTrajeto = null;
+
+/* ======================================================
+   RENDERIZAÇÃO
+====================================================== */
+function mostrarDia(dia) {
+    atualizarBotoesDia(dia);
+  markersLayer.clearLayers();
+
+  if (linhaTrajeto) {
+    map.removeLayer(linhaTrajeto);
+  }
+
+  const dados = dia === 1 ? apoiosDia1 : apoiosDia2;
+  const trajeto = dia === 1 ? trajetoDia1 : trajetoDia2;
+
+  /* 🔹 DESENHA O TRAJETO */
+  linhaTrajeto = L.polyline(trajeto, {
+    color: "#0b4f6c",
+    weight: 5,
+    opacity: 0.85
+  }).addTo(map);
+
+  /* ==================================================
+     👉 PASSO 2 É AQUI 👈
+     INÍCIO E CHEGADA DO DIA
+  ================================================== */
+
+  const inicio = trajeto[0];
+  L.marker(inicio, { icon: iconeInicio() })
+    .addTo(markersLayer)
+    .bindPopup(`🚩 <strong>Início – Dia ${dia}</strong>`);
+
+  const fim = trajeto[trajeto.length - 1];
+  L.marker(fim, { icon: iconeFim() })
+    .addTo(markersLayer)
+    .bindPopup(`🏁 <strong>Chegada – Dia ${dia}</strong>`);
+
+  /* ==================================================
+     PONTOS DE APOIO
+  ================================================== */
+
+ dados.forEach(p => {
+    L.marker([p.lat, p.lng], { icon: iconeCarro(p.carro) })
+      .addTo(markersLayer)
+      .bindPopup(`
+        <strong>🚌 ${p.nome}</strong><br>
+        📍 Km ${p.km}<br>
+        🚗 Carro ${p.carro}<br>
+        📅 Dia ${dia}
+      `);
+  });
+
+  /* 🔹 AJUSTA ZOOM */
+  const grupo = L.featureGroup([
+    linhaTrajeto,
+    ...markersLayer.getLayers()
+  ]);
+
+  map.fitBounds(grupo.getBounds(), { padding: [20, 20] });
+}
+function atualizarBotoesDia(dia) {
+  const btn1 = document.getElementById("btn-dia1");
+  const btn2 = document.getElementById("btn-dia2");
+
+  btn1.classList.remove("ativo");
+  btn2.classList.remove("ativo");
+
+  if (dia === 1) {
+    btn1.classList.add("ativo");
+  } else {
+    btn2.classList.add("ativo");
+  }
+}
+/* ======================================================
+   INICIALIZA COM DIA 1
+====================================================== */
+mostrarDia(1);
+
+
+/* ======================================================
+   LOCALIZAÇÃO DO USUÁRIO (GPS)
+====================================================== */
+
+let marcadorUsuario = null;
+
+function localizarUsuario() {
+  if (!navigator.geolocation) {
+    console.warn("Geolocalização não suportada.");
+    return;
+  }
+
+  navigator.geolocation.watchPosition(
+    pos => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+
+      if (!marcadorUsuario) {
+        marcadorUsuario = L.circleMarker([lat, lng], {
+          radius: 8,
+          color: "#d9534f",
+          fillColor: "#d9534f",
+          fillOpacity: 1
+        })
+          .addTo(map)
+          .bindPopup("📍 Você está aqui");
+      } else {
+        marcadorUsuario.setLatLng([lat, lng]);
+      }
+    },
+    err => {
+      console.warn("Erro GPS:", err.message);
+    },
+    {
+      enableHighAccuracy: true,
+      maximumAge: 10000,
+      timeout: 10000
+    }
+  );
+}
+
+/* 🔹 Inicia automaticamente */
+localizarUsuario();
+
+</script>
 {% endblock %}
