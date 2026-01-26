@@ -67,7 +67,7 @@ Principais destaques:
 - **PWA**
   - Service Worker
   - Web App Manifest
-
+git status
 ---
 
 ## 🚀 Como rodar o projeto localmente

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>📋 Pontos de Apoio – Peregrinação</h2>
+<p>Lista detalhada dos pontos de apoio ao longo do trajeto.</p>
+
+<h3>📍 Dia 1</h3>
+<table class="tabela">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Km</th>
+      <th>Carro</th>
+      <th>Apoio</th>
+    </tr>
+  </thead>
+  <tbody id="tabela-dia1"></tbody>
+</table>
+
+<h3 style="margin-top:2rem;">📍 Dia 2</h3>
+<table class="tabela">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Km</th>
+      <th>Carro</th>
+      <th>Apoio</th>
+    </tr>
+  </thead>
+  <tbody id="tabela-dia2"></tbody>
+</table>
+
+<!-- 🔹 Fonte única dos dados -->
+<script src="{{ url_for('static', filename='mapa-dados.js') }}"></script>
+
+<script>
+function gerarTabela(dados, tbodyId) {
+  const tbody = document.getElementById(tbodyId);
+  tbody.innerHTML = "";
+
+  dados.forEach((p, i) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${i + 1}</td>
+      <td>${p.km} km</td>
+      <td>Carro ${p.carro}</td>
+      <td>${p.nome}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Gera automaticamente usando OS MESMOS DADOS DO MAPA
+gerarTabela(apoiosDia1, "tabela-dia1");
+gerarTabela(apoiosDia2, "tabela-dia2");
+</script>
+
+{% endblock %}

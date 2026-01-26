@@ -231,4 +231,168 @@ li {
   font-size: 0.75rem;
   color: #888;
 }
+.tabela-apoios {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+.tabela-apoios th,
+.tabela-apoios td {
+  padding: 0.6rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.tabela-apoios th {
+  background-color: #f4f6f8;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .tabela-apoios {
+    font-size: 0.85rem;
+  }
+}
+.tabela-apoios {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+.tabela-apoios th,
+.tabela-apoios td {
+  border-bottom: 1px solid #ddd;
+  padding: 0.6rem;
+  text-align: left;
+}
+
+.tabela-apoios th {
+  background: #f4f4f4;
+}
+/* ===============================
+   TABELA – PONTOS DE APOIO
+=============================== */
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.8rem;
+  font-size: 0.95rem;
+}
+
+.tabela thead {
+  background-color: #0b4f6c;
+  color: #ffffff;
+}
+
+.tabela th,
+.tabela td {
+  padding: 10px 8px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tabela th {
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.tabela tbody tr:nth-child(even) {
+  background-color: #f7f9fb;
+}
+
+.tabela tbody tr:hover {
+  background-color: #eef5f9;
+}
+
+/* Ajustes mobile */
+@media (max-width: 600px) {
+  .tabela {
+    font-size: 0.85rem;
+  }
+
+  .tabela th,
+  .tabela td {
+    padding: 8px 6px;
+  }
+}
+/* ===============================
+   SELETOR DIA 1 / DIA 2
+=============================== */
+
+.seletor-dias {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.botao-dia {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid #0b4f6c;
+  background: #ffffff;
+  color: #0b4f6c;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.botao-dia.ativo {
+  background: #0b4f6c;
+  color: #ffffff;
+}
+
+.botao-dia:not(.ativo):hover {
+  background: #eef5f9;
+}
+/* ===============================
+   MENU – AJUSTE MOBILE
+================================ */
+@media (max-width: 768px) {
+
+  nav ul {
+    row-gap: 0.8rem;      /* espaço ENTRE as linhas */
+    column-gap: 0.8rem;  /* espaço ENTRE os itens */
+    line-height: 1.4;
+  }
+
+  nav ul li a {
+    padding: 0.4rem 0.6rem;
+    display: inline-block;
+  }
+}
+/* ===============================
+   MENU – AJUSTE MOBILE (nav a)
+================================ */
+@media (max-width: 768px) {
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 0.1rem;     /* espaço entre as linhas */
+    column-gap: 0.1rem; /* espaço entre os links */
+  }
+
+  nav a {
+    padding: 0.4rem 0.6rem;
+    line-height: 0.6;
+    display: inline-block;
+  }
+}
+button.ativo,
+.botao-principal.ativo,
+.botao-secundario.ativo {
+  background-color: #0b4f6c;
+  color: #fff;
+  border-color: #0b4f6c;
+}
+button.ativo {
+  box-shadow: 0 0 0 2px rgba(11,79,108,0.3);
+}
+
 
