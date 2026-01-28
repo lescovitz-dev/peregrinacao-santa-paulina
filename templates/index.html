@@ -1,39 +1,62 @@
 {% extends "base.html" %}
-
 {% block content %}
 
-<div class="banner" style="background-image: url('{{ url_for('static', filename='images/banner.jpg') }}');">
-    <div class="banner-overlay">
+<!-- =======================
+     HERO / BANNER PRINCIPAL
+======================= -->
+<div class="banner"
+     style="background-image: url('{{ url_for('static', filename='images/banner.jpg') }}');">
 
-        <p class="banner-datas">
-            25 e 26 de setembro de 2026
-        </p>
+  <div class="banner-overlay">
 
-        <p class="banner-local">
-            De Blumenau para Nova Trento
-        </p>
+    <!-- Datas da peregrinação -->
+    <p class="banner-datas">
+      25 e 26 de setembro de 2026
+    </p>
 
-        <a 
-          href="https://docs.google.com/forms/d/e/1FAIpQLSemGN4xoAQq3Kl9sfy7fVZcI-oMeqnGsM_MYn3oBwxZgRQ_yg/viewform"
-          class="botao-principal"
-          target="_blank"
-        >
-            👉 Fazer inscrição
-        </a>
+    <!-- Local -->
+    <p class="banner-local">
+      De Blumenau para Nova Trento
+    </p>
+
+    <!-- Botões de inscrição e informações obrigatórias -->
+    <div class="botoes-inscricao">
+
+      <a href="https://forms.gle/QQK16iRkhBgLPkoV8" class="botao-principal">
+        👉 Fazer inscrição
+      </a>
+
+      <a href="{{ url_for('static', filename='docs/Regimento Interno – 11ª Peregrinação A Santa Paulina (2026).pdf') }}"
+         target="_blank"
+         class="botao-secundario">
+        📄 Regimento / Termo de Consentimento
+      </a>
+
+      <a href="https://chat.whatsapp.com/CrpfNRxKuwP2EDvOA6IDCM"
+         target="_blank"
+         class="botao-secundario">
+        💬 Grupo oficial do WhatsApp
+      </a>
 
     </div>
+  </div>
 </div>
 
+<!-- =======================
+     TEXTO INSTITUCIONAL
+======================= -->
 <div class="home-card">
-    <p>
-        A peregrinação é uma caminhada de fé, gratidão e superação,
-        realizada anualmente rumo ao Santuário de Santa Paulina.
-    </p>
 
-    <p class="ajuda">
-        Em caso de dúvidas, envie sua pergunta no grupo de WhatsApp da peregrinação.
-        Um membro da organização irá responder.
-    </p>
+  <p>
+    A peregrinação é uma caminhada de fé, gratidão e superação,
+    realizada anualmente rumo ao Santuário de Santa Paulina.
+  </p>
+
+  <p class="ajuda">
+    Em caso de dúvidas, envie sua pergunta no grupo de WhatsApp da peregrinação.
+    Um membro da organização irá responder.
+  </p>
+
 </div>
 
 {% endblock %}

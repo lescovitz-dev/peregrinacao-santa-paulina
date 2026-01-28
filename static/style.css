@@ -394,5 +394,30 @@ button.ativo,
 button.ativo {
   box-shadow: 0 0 0 2px rgba(11,79,108,0.3);
 }
+.links-inscricao {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.links-inscricao p {
+  margin: 0.4rem 0;
+}
+
+.links-inscricao a {
+  color: #0b4f6c;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.links-inscricao a:hover {
+  text-decoration: underline;
+}
+
+.links-inscricao .hint {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: #555;
+}
 
 
