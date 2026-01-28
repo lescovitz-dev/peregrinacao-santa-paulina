@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 
 app = Flask(__name__)
-APP_VERSION = "1.1.1"
+APP_VERSION = "1.2.2"
 CHECKLIST_ITENS = [
     "Documento pessoal",
     "Cartão SUS / Plano de saúde",
