@@ -4,275 +4,220 @@
 <h2>🗺️ Mapa da Peregrinação</h2>
 
 <div style="margin-bottom: 1rem;">
-<button id="btn-dia1" onclick="mostrarDia(1)" class="botao-dia ativo">
-    📍 Dia 1
-  </button>
-  <button id="btn-dia2" onclick="mostrarDia(2)" class="botao-dia">
-    📍 Dia 2
-  </button>
+  <button id="btn-dia1" class="botao-dia ativo" onclick="mostrarDia(1)">📍 Dia 1</button>
+  <button id="btn-dia2" class="botao-dia" onclick="mostrarDia(2)">📍 Dia 2</button>
+
   <p style="margin-top: 0.8rem;">
-  <a href="/mapa/apoios" class="botao-secundario">
-    📋 Ver lista detalhada dos pontos de apoio
-  </a>
+    <a href="/mapa/apoios" class="botao-secundario">
+      📋 Ver lista detalhada dos pontos de apoio
+    </a>
   </p>
 </div>
 
-<div id="map" style="height: 65vh; width: 100%; border-radius: 12px;"></div>
+<div id="map" style="height:65vh; width:100%; border-radius:12px;"></div>
 
-<!-- Leaflet CSS -->
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
-<script src="{{ url_for('static', filename='mapa-dados.js') }}"></script>
-<!-- Leaflet JS -->
+<div id="botao-navegacao" style="margin-top:1rem; text-align:center;">
+  <button class="botao-principal" onclick="abrirGoogleMapsComGPS()">
+    🧭 Navegar percurso – Dia 1
+  </button>
+</div>
+
+<div id="distancia-chegada" style="
+  margin-top:0.6rem;
+  text-align:center;
+  font-size:0.9rem;
+  color:#444;
+">
+  📍 Aguardando localização…
+</div>
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 /* ======================================================
-   MAPA BASE
+   VARIÁVEIS GLOBAIS
 ====================================================== */
-const map = L.map("map").setView([-27.100, -48.600], 10);
+let diaSelecionado = 1;
+let posicaoUsuario = null;
+let marcadorUsuario = null;
+let linhaTrajeto = null;
 
+const map = L.map("map").setView([-27.10, -48.60], 10);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "© OpenStreetMap"
 }).addTo(map);
 
-let markersLayer = L.layerGroup().addTo(map);
+const markersLayer = L.layerGroup().addTo(map);
 
 /* ======================================================
-   ÍCONES POR CARRO DE APOIO
+   ÍCONES
 ====================================================== */
 function iconeCarro(carro) {
-  const cores = {
-    1: "red",
-    2: "blue",
-    3: "green",
-    4: "purple"
-  };
-
+  const cores = {1:"red",2:"blue",3:"green",4:"purple"};
   return L.divIcon({
-    html: `<div style="
-      background:${cores[carro]};
-      width:16px;
-      height:16px;
-      border-radius:50%;
-      border:2px solid white;"></div>`,
-    className: "",
-    iconSize: [16, 16]
+    html:`<div style="background:${cores[carro]};
+      width:16px;height:16px;border-radius:50%;
+      border:2px solid white"></div>`,
+    className:""
   });
 }
+
 function iconeInicio() {
   return L.divIcon({
-    html: `<div style="
-      background:#007bff;
-      width:18px;
-      height:18px;
-      border-radius:50%;
-      border:3px solid white;
-      box-shadow:0 0 4px rgba(0,0,0,0.4);
-    "></div>`,
-    className: "",
-    iconSize: [18, 18]
+    html:`<div style="
+      background:#007bff;color:white;
+      width:28px;height:28px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      border:3px solid white;">🚩</div>`,
+    iconSize:[28,28], iconAnchor:[14,28]
   });
 }
 
 function iconeFim() {
   return L.divIcon({
-    html: `<div style="
-      background:#28a745;
-      width:18px;
-      height:18px;
-      border-radius:50%;
-      border:3px solid white;
-      box-shadow:0 0 4px rgba(0,0,0,0.4);
-    "></div>`,
-    className: "",
-    iconSize: [18, 18]
+    html:`<div style="
+      background:#28a745;color:white;
+      width:28px;height:28px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      border:3px solid white;">🏁</div>`,
+    iconSize:[28,28], iconAnchor:[14,28]
   });
 }
 
 /* ======================================================
-   DADOS EDITÁVEIS – PONTOS DE APOIO
+   DADOS – APOIOS E TRAJETOS
 ====================================================== */
-
-/* 🔹 DIA 1 */
 const apoiosDia1 = [
-  { km: 6,  lat: -27.000923, lng: -49.038497, carro: 1, nome: "Apoio 1 – Van Maria" },
-  { km: 9, lat: -27.019043, lng: -49.023349, carro: 2, nome: "Apoio 2 – Kombi José" },
-  { km: 12.3, lat: -27.036939, lng: -49.020904, carro: 3, nome: "Apoio 3 – Caminhonete Paulo" },
-  { km: 14.6, lat: -27.045777, lng: -49.013245, carro: 4, nome: "Apoio 4 – Van Ana" },
-  { km: 18.4, lat: -27.069221, lng: -48.998240, carro: 1, nome: "Apoio 5 – Van Maria" },
-  { km: 21.7, lat: -27.094183, lng: -48.985138, carro: 1, nome: "Apoio 6 – Van Maria" },
-  { km: 24.3, lat: -27.095984, lng: -48.961751, carro: 1, nome: "Apoio 7 – Van Maria" }
+  { km:6, lat:-27.000923, lng:-49.038497, carro:1, nome:"Apoio 1 – Van Maria" },
+  { km:9, lat:-27.019043, lng:-49.023349, carro:2, nome:"Apoio 2 – Kombi José" },
+  { km:12.3, lat:-27.036939, lng:-49.020904, carro:3, nome:"Apoio 3 – Caminhonete Paulo" },
+  { km:14.6, lat:-27.045777, lng:-49.013245, carro:4, nome:"Apoio 4 – Van Ana" },
+  { km:18.4, lat:-27.069221, lng:-48.998240, carro:1, nome:"Apoio 5 – Van Maria" }
 ];
 
-/* 🔹 DIA 2 */
 const apoiosDia2 = [
-  { km: 4.2,  lat: -27.124129, lng: -48.936247, carro: 2, nome: "Apoio 1 – Kombi José" },
-  { km: 9.7, lat: -27.159833, lng: -48.955933, carro: 3, nome: "Apoio 2 – Caminhonete Paulo" }, 
-  { km: 12.4, lat: -27.180118, lng: -48.967557, carro: 4, nome: "Apoio 3 – Van Ana" }, 
-  { km: 15.4, lat: -27.194496, lng: -48.951509, carro: 1, nome: "Apoio 4 – Van Maria" }, 
-  { km: 16, lat: -27.195427, lng: -48.946533, carro: 1, nome: "Apoio 5 – Van Maria" },
-  { km: 17.2, lat: -27.204119, lng: -48.942808, carro: 1, nome: "Apoio 6 – Van Maria" }, 
-  { km: 18.8, lat: -27.214468, lng: -48.934438, carro: 1, nome: "Apoio 7 – Van Maria" }, 
-  { km: 21.2, lat: -27.232121, lng: -48.939720, carro: 1, nome: "Apoio 8 – Van Maria" }
+  { km:4.2, lat:-27.124129, lng:-48.936247, carro:2, nome:"Apoio 1 – Kombi José" },
+  { km:9.7, lat:-27.159833, lng:-48.955933, carro:3, nome:"Apoio 2 – Caminhonete Paulo" },
+  { km:12.4, lat:-27.180118, lng:-48.967557, carro:4, nome:"Apoio 3 – Van Ana" }
 ];
 
-/* ======================================================
-   TRAJETO DO PERCURSO (EDITÁVEL)
-====================================================== */
-
-/* 🔹 DIA 1 – percurso aproximado */
 const trajetoDia1 = [
-  [-26.964034, -49.058889],
-  [-27.000923, -49.038497],
-  [-27.019043, -49.023349],
-  [-27.036939, -49.020904],
-  [-27.045777, -49.013245],
-  [-27.069221, -48.998240],
-  [-27.094183, -48.985138],
-  [-27.095984, -48.961751],
-  [-27.096353, -48.914205]
+  [-26.964034,-49.058889],
+  [-27.000923,-49.038497],
+  [-27.036939,-49.020904],
+  [-27.095984,-48.961751]
 ];
 
-/* 🔹 DIA 2 */
 const trajetoDia2 = [
-  [-27.096287, -48.914279], 
-  [-27.124129, -48.936247],
-  [-27.159833, -48.955933],
-  [-27.180118, -48.967557],
-  [-27.194496, -48.951509],
-  [-27.195427, -48.946533],
-  [-27.204119, -48.942808],
-  [-27.214468, -48.934438],
-  [-27.232121, -48.939720],
-  [-27.252097, -48.942098]
+  [-27.096287,-48.914279],
+  [-27.159833,-48.955933],
+  [-27.232121,-48.939720]
 ];
-
-let linhaTrajeto = null;
 
 /* ======================================================
    RENDERIZAÇÃO
 ====================================================== */
 function mostrarDia(dia) {
-    atualizarBotoesDia(dia);
+  diaSelecionado = dia;
+  atualizarBotoes();
+
   markersLayer.clearLayers();
+  if (linhaTrajeto) map.removeLayer(linhaTrajeto);
 
-  if (linhaTrajeto) {
-    map.removeLayer(linhaTrajeto);
-  }
-
-  const dados = dia === 1 ? apoiosDia1 : apoiosDia2;
+  const apoios = dia === 1 ? apoiosDia1 : apoiosDia2;
   const trajeto = dia === 1 ? trajetoDia1 : trajetoDia2;
 
-  /* 🔹 DESENHA O TRAJETO */
   linhaTrajeto = L.polyline(trajeto, {
-    color: "#0b4f6c",
-    weight: 5,
-    opacity: 0.85
+    color:"#0b4f6c", weight:5, opacity:0.85
   }).addTo(map);
 
-  /* ==================================================
-     👉 PASSO 2 É AQUI 👈
-     INÍCIO E CHEGADA DO DIA
-  ================================================== */
+  L.marker(trajeto[0], {icon:iconeInicio()}).addTo(markersLayer);
+  L.marker(trajeto[trajeto.length-1], {icon:iconeFim()}).addTo(markersLayer);
 
-  const inicio = trajeto[0];
-  L.marker(inicio, { icon: iconeInicio() })
-    .addTo(markersLayer)
-    .bindPopup(`🚩 <strong>Início – Dia ${dia}</strong>`);
-
-  const fim = trajeto[trajeto.length - 1];
-  L.marker(fim, { icon: iconeFim() })
-    .addTo(markersLayer)
-    .bindPopup(`🏁 <strong>Chegada – Dia ${dia}</strong>`);
-
-  /* ==================================================
-     PONTOS DE APOIO
-  ================================================== */
-
- dados.forEach(p => {
-    L.marker([p.lat, p.lng], { icon: iconeCarro(p.carro) })
+  apoios.forEach(p=>{
+    L.marker([p.lat,p.lng],{icon:iconeCarro(p.carro)})
       .addTo(markersLayer)
-      .bindPopup(`
-        <strong>🚌 ${p.nome}</strong><br>
-        📍 Km ${p.km}<br>
-        🚗 Carro ${p.carro}<br>
-        📅 Dia ${dia}
-      `);
+      .bindPopup(`<strong>${p.nome}</strong><br>Km ${p.km}`);
   });
 
-  /* 🔹 AJUSTA ZOOM */
-  const grupo = L.featureGroup([
-    linhaTrajeto,
-    ...markersLayer.getLayers()
-  ]);
+  const grupo = L.featureGroup([linhaTrajeto, ...markersLayer.getLayers()]);
+  map.fitBounds(grupo.getBounds(), {padding:[20,20]});
 
-  map.fitBounds(grupo.getBounds(), { padding: [20, 20] });
+  document.querySelector("#botao-navegacao button").innerText =
+    `🧭 Navegar percurso – Dia ${dia}`;
 }
-function atualizarBotoesDia(dia) {
-  const btn1 = document.getElementById("btn-dia1");
-  const btn2 = document.getElementById("btn-dia2");
-
-  btn1.classList.remove("ativo");
-  btn2.classList.remove("ativo");
-
-  if (dia === 1) {
-    btn1.classList.add("ativo");
-  } else {
-    btn2.classList.add("ativo");
-  }
-}
-/* ======================================================
-   INICIALIZA COM DIA 1
-====================================================== */
-mostrarDia(1);
-
 
 /* ======================================================
-   LOCALIZAÇÃO DO USUÁRIO (GPS)
+   BOTÕES
 ====================================================== */
+function atualizarBotoes(){
+  document.getElementById("btn-dia1").classList.toggle("ativo", diaSelecionado===1);
+  document.getElementById("btn-dia2").classList.toggle("ativo", diaSelecionado===2);
+}
 
-let marcadorUsuario = null;
+/* ======================================================
+   GPS + DISTÂNCIA
+====================================================== */
+function localizarUsuario(){
+  if(!navigator.geolocation) return;
 
-function localizarUsuario() {
-  if (!navigator.geolocation) {
-    console.warn("Geolocalização não suportada.");
+  navigator.geolocation.watchPosition(pos=>{
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+    posicaoUsuario = [lat,lng];
+
+    if(!marcadorUsuario){
+      marcadorUsuario = L.circleMarker([lat,lng],{
+        radius:8,color:"#d9534f",fillColor:"#d9534f",fillOpacity:1
+      }).addTo(map);
+    } else {
+      marcadorUsuario.setLatLng([lat,lng]);
+    }
+
+    atualizarDistancia(lat,lng);
+  });
+}
+
+function atualizarDistancia(lat,lng){
+  const trajeto = diaSelecionado===1?trajetoDia1:trajetoDia2;
+  const fim = trajeto[trajeto.length-1];
+  const d = calcularDistancia(lat,lng,fim[0],fim[1]);
+  document.getElementById("distancia-chegada").innerHTML =
+    `📍 <strong>Distância até a chegada:</strong> ${d.toFixed(1)} km<br>
+     <small>Estimativa em linha reta (GPS)</small>`;
+}
+
+function calcularDistancia(lat1,lon1,lat2,lon2){
+  const R=6371;
+  const dLat=(lat2-lat1)*Math.PI/180;
+  const dLon=(lon2-lon1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2 +
+    Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
+    Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+/* ======================================================
+   GOOGLE MAPS
+====================================================== */
+function abrirGoogleMapsComGPS(){
+  if(!posicaoUsuario){
+    alert("Ative o GPS para navegar.");
     return;
   }
-
-  navigator.geolocation.watchPosition(
-    pos => {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
-
-      if (!marcadorUsuario) {
-        marcadorUsuario = L.circleMarker([lat, lng], {
-          radius: 8,
-          color: "#d9534f",
-          fillColor: "#d9534f",
-          fillOpacity: 1
-        })
-          .addTo(map)
-          .bindPopup("📍 Você está aqui");
-      } else {
-        marcadorUsuario.setLatLng([lat, lng]);
-      }
-    },
-    err => {
-      console.warn("Erro GPS:", err.message);
-    },
-    {
-      enableHighAccuracy: true,
-      maximumAge: 10000,
-      timeout: 10000
-    }
-  );
+  const fim = (diaSelecionado===1?trajetoDia1:trajetoDia2).slice(-1)[0];
+  const url = `https://www.google.com/maps/dir/?api=1&origin=${posicaoUsuario[0]},${posicaoUsuario[1]}&destination=${fim[0]},${fim[1]}&travelmode=walking`;
+  window.open(url,"_blank");
 }
 
-/* 🔹 Inicia automaticamente */
+/* ======================================================
+   INIT
+====================================================== */
+mostrarDia(1);
 localizarUsuario();
 
 </script>
+
 {% endblock %}

@@ -1,6 +1,6 @@
 {
-  "name": "Peregrinos da Graça",
-  "short_name": "Peregrinação",
+  "name": "Guia do Peregrino",
+  "short_name": "Guia do Peregrino",
   "description": "Guia da 11ª Peregrinação ao Santuário de Santa Paulina",
   "start_url": "/",
   "display": "standalone",
