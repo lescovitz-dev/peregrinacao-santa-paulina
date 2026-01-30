@@ -446,5 +446,16 @@ button.ativo {
   width: 20px;
   height: 20px;
 }
+.botao-whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.icone-whatsapp {
+  width: 20px;
+  height: 20px;
+}
 
 
